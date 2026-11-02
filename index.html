@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#d5e3da">
+  <title>Plano de treino · Cláudia Santos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ground: #d5e3da;
+      --ground-deep: #c3d5cb;
+      --ink: #15211c;
+      --ink-soft: #3e5248;
+      --card: #fbfaf6;
+      --tape: #e23b28;
+      --tape-deep: #b42314;
+      --line: #e4ebe6;
+      --chalk: #fffefb;
+      --display: "Syne", "Arial Narrow", sans-serif;
+      --sans: "Outfit", "Segoe UI", sans-serif;
+      --mono: "IBM Plex Mono", "Cascadia Mono", ui-monospace, monospace;
+      --shadow: 0 18px 40px rgba(21, 33, 28, 0.08);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--sans);
+      background:
+        radial-gradient(1200px 500px at 100% -10%, rgba(226, 59, 40, 0.08), transparent 55%),
+        linear-gradient(180deg, var(--ground) 0%, #e7f0ea 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(21, 33, 28, 0.035) 1px, transparent 1px);
+      background-size: 100% 28px;
+      mask-image: linear-gradient(180deg, #000 0%, transparent 72%);
+    }
+
+    .wrap {
+      width: min(740px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+      position: relative;
+    }
+
+    .board {
+      position: relative;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .board::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 8px;
+      background: repeating-linear-gradient(
+        -18deg,
+        var(--tape) 0 14px,
+        var(--tape-deep) 14px 16px,
+        #f4f1ea 16px 22px
+      );
+    }
+
+    .mark {
+      position: absolute;
+      top: 34px;
+      right: 16px;
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 7.4rem;
+      line-height: 0.8;
+      letter-spacing: -0.06em;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(21, 33, 28, 0.2);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+
+    header.hero {
+      position: relative;
+      z-index: 1;
+      padding: 36px 112px 8px 28px;
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--tape-deep);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 11ch;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(2.6rem, 8vw, 4.2rem);
+      line-height: 0.9;
+      letter-spacing: -0.045em;
+    }
+
+    .lede {
+      margin: 16px 0 0;
+      max-width: 36ch;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      line-height: 1.45;
+    }
+
+    .switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 22px 28px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .plan-btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--chalk);
+      color: var(--ink);
+      border-radius: 16px;
+      min-height: 76px;
+      padding: 12px 14px 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      position: relative;
+    }
+
+    .plan-btn strong {
+      display: block;
+      font-family: var(--display);
+      font-size: 1.35rem;
+      letter-spacing: -0.03em;
+    }
+
+    .plan-btn span {
+      display: block;
+      margin-top: 2px;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+    }
+
+    .plan-btn[aria-pressed="true"] {
+      border-color: transparent;
+      background: var(--ink);
+      color: var(--chalk);
+    }
+
+    .plan-btn[aria-pressed="true"] span { color: rgba(251, 250, 246, 0.72); }
+
+    .plan-btn[aria-pressed="true"]::after {
+      content: "";
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 8px;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--tape);
+    }
+
+    .plan-btn:focus-visible,
+    .check:focus-visible,
+    .player iframe:focus-visible,
+    .load input:focus-visible,
+    .text-btn:focus-visible {
+      outline: 2px solid var(--tape);
+      outline-offset: 3px;
+    }
+
+    .session-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      padding: 18px 28px 0;
+      position: relative;
+      z-index: 1;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .session-bar p { margin: 0; }
+
+    .text-btn {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--ink-soft);
+      font: inherit;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 4px 0;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    ol.moves {
+      list-style: none;
+      margin: 8px 0 0;
+      padding: 6px 16px 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .move {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .move:last-child { border-bottom: 0; }
+
+    .move.is-done .name {
+      color: var(--ink-soft);
+    }
+
+    .check {
+      width: 28px;
+      height: 28px;
+      margin-top: 2px;
+      border-radius: 8px;
+      border: 1.5px solid #b7c6bd;
+      background: var(--chalk);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: transparent;
+    }
+
+    .check[aria-pressed="true"] {
+      background: var(--tape);
+      border-color: var(--tape);
+      color: white;
+    }
+
+    .check svg { width: 16px; height: 16px; }
+
+    .body { min-width: 0; }
+
+    .topline {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .idx {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tape-deep);
+    }
+
+    .name {
+      margin: 2px 0 8px;
+      font-size: 1.22rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .rx {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      background: #eef3ef;
+      border-radius: 999px;
+      padding: 5px 10px;
+      color: var(--ink);
+    }
+
+    .move.is-cardio .pill {
+      background: #f8e8e4;
+    }
+
+    .load {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .load label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .load input {
+      width: 7.5rem;
+      border: 0;
+      border-bottom: 1.5px solid #c5d2ca;
+      background: transparent;
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      color: var(--ink);
+      padding: 4px 2px;
+      border-radius: 0;
+    }
+
+    .player {
+      width: min(100%, 320px);
+      margin-top: 12px;
+      aspect-ratio: 9 / 16;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--ink);
+    }
+
+    .player iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .player-offline {
+      display: grid;
+      place-items: center;
+      aspect-ratio: auto;
+      min-height: 148px;
+      padding: 18px;
+      color: var(--chalk);
+      text-align: center;
+    }
+
+    .player-offline p { margin: 0; line-height: 1.4; }
+
+    .done-note {
+      margin: 0 28px 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #e7f3ea;
+      color: #1d4a32;
+      font-size: 0.95rem;
+    }
+
+    .done-note[hidden] { display: none; }
+
+    footer.note {
+      padding: 4px 28px 26px;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 560px) {
+      .wrap { width: min(740px, calc(100% - 16px)); padding-top: 12px; }
+      header.hero { padding: 28px 16px 8px; }
+      .switcher, .session-bar, footer.note { padding-left: 16px; padding-right: 16px; }
+      .done-note { margin-left: 16px; margin-right: 16px; }
+      ol.moves { padding-left: 16px; padding-right: 16px; }
+      h1 { font-size: 2.55rem; max-width: calc(100% - 96px); }
+      .mark { font-size: 4.5rem; top: 20px; right: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .mark { transition: none; }
+    }
+
+    @media print {
+      body { background: white; }
+      body::before { display: none; }
+      .wrap { width: 100%; }
+      .board { box-shadow: none; }
+      .check, .text-btn, .player, .load { display: none; }
+      .move { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <article class="board">
+      <p class="mark" id="mark" aria-hidden="true">A</p>
+      <header class="hero">
+        <p class="kicker">Plano de treino</p>
+        <h1>Cláudia Santos</h1>
+        <p class="lede">Dois treinos de corpo inteiro. Escolhe o plano do dia e segue a ordem da lista.</p>
+      </header>
+
+      <div class="switcher" role="group" aria-label="Plano do dia">
+        <button class="plan-btn" type="button" id="btn-a" aria-pressed="true">
+          <strong>Plano A</strong>
+          <span>Fullbody</span>
+        </button>
+        <button class="plan-btn" type="button" id="btn-b" aria-pressed="false">
+          <strong>Plano B</strong>
+          <span>Fullbody</span>
+        </button>
+      </div>
+
+      <div class="session-bar">
+        <p id="progress">0 de 9 feitos hoje</p>
+        <button class="text-btn" type="button" id="clear-day">Limpar o dia</button>
+      </div>
+      <p class="done-note" id="done-note" hidden>Sessão de hoje fechada.</p>
+      <ol class="moves" id="moves"></ol>
+      <footer class="note">A carga fica guardada neste dispositivo. As marcas de “feito” valem só para o dia de hoje.</footer>
+    </article>
+  </div>
+
+  <script>
+    const plans = {
+      A: {
+        letter: "A",
+        moves: [
+          { id: "passadeira", name: "Passadeira", kind: "cardio", tag: "Aquecimento", time: "15 min" },
+          { id: "trx-squats", name: "TRX Squats", sets: "3", reps: "12 a 20", video: "https://youtube.com/shorts/j2u_Smd5_8s?si=QSPHhQICDF7yJFy9" },
+          { id: "trx-row", name: "TRX Row", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/fAwrRJu5tw0?si=u0oqhyDTWOOObpp_" },
+          { id: "leg-curl", name: "Leg Curl", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/gfT6P3XSs0k?si=AaQxd6JG8USipG3g" },
+          { id: "chest-press", name: "Chest Press", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/E7fl51PkEn4?si=z7L-XbzO8Rjoutub" },
+          { id: "thrusters", name: "Thrusters", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/HjZOo0hNVqE?si=2rqzgE6YOh6hRLcG" },
+          { id: "cable-triceps", name: "Cable Triceps", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/L9mJCdhWBnY?si=acKjw8Rhi_NnVIYp" },
+          { id: "plank-bosu", name: "Plank Bosu", sets: "3", reps: "40 seg", video: "https://youtube.com/shorts/ToWzmzsO2FU?si=IEciT34rr_CjsUm7" },
+          { id: "bike", name: "Bike", kind: "cardio", tag: "Final", time: "10 min" }
+        ]
+      },
+      B: {
+        letter: "B",
+        moves: [
+          { id: "eliptica", name: "Elíptica", kind: "cardio", tag: "Aquecimento", time: "10 min" },
+          { id: "trx-lunges", name: "TRX Lunges", sets: "3", reps: "12 a 20", video: "https://youtube.com/shorts/zcYw88l_xyc?si=mC0OrBMlAMJOZzAM" },
+          { id: "inchworms", name: "Inchworms", sets: "3", reps: "10 a 12", video: "https://youtube.com/shorts/CeBwJ1TVV5w?si=IK94nEF-JaPlm3vp" },
+          { id: "gluteos", name: "Glúteos na bola", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/SVqWfshDXXg?si=7-OFsfQdMV67B3-6" },
+          { id: "pec-fly", name: "Pec Fly machine", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/NUiGkrwVIEo?si=vRP23mq-YCipyJAh" },
+          { id: "lat-pulldown", name: "Lat pulldown", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/cnhqUfduFoE?si=3eESNm4QJpEs8EQm" },
+          { id: "squats-high-pull", name: "Squats high pull", sets: "3", reps: "12 a 15", video: "https://youtube.com/shorts/Q0rlKtS8SjI?si=dVna86rLwDcDDDqJ" },
+          { id: "lateral-plank", name: "Lateral plank", sets: "2", reps: "30 seg", video: "https://youtube.com/shorts/fzLeV8X0Gb8?si=BZiNo4TWx2i9YK_S" },
+          { id: "bicicleta", name: "Bicicleta", kind: "cardio", tag: "Final", time: "15 min" }
+        ]
+      }
+    };
+
+    const storeKey = "claudia-treino-v1";
+    const movesEl = document.getElementById("moves");
+    const markEl = document.getElementById("mark");
+    const progressEl = document.getElementById("progress");
+    const doneNote = document.getElementById("done-note");
+    const btnA = document.getElementById("btn-a");
+    const btnB = document.getElementById("btn-b");
+
+    let current = location.hash.toLowerCase() === "#b" ? "B" : "A";
+
+    function todayKey() {
+      const d = new Date();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return d.getFullYear() + "-" + m + "-" + day;
+    }
+
+    function readStore() {
+      try {
+        const raw = localStorage.getItem(storeKey);
+        const data = raw ? JSON.parse(raw) : {};
+        return { loads: data.loads || {}, done: data.done || {} };
+      } catch (err) {
+        return { loads: {}, done: {} };
+      }
+    }
+
+    function writeStore(data) {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(data));
+      } catch (err) {
+        /* a página continua utilizável sem gravar */
+      }
+    }
+
+    function doneId(move) {
+      return todayKey() + ":" + current + ":" + move.id;
+    }
+
+    function loadId(move) {
+      return current + ":" + move.id;
+    }
+
+    function paintChecks() {
+      const data = readStore();
+      const plan = plans[current];
+      plan.moves.forEach(function (move) {
+        const button = movesEl.querySelector('[data-check="' + move.id + '"]');
+        if (!button) return;
+        const done = !!data.done[doneId(move)];
+        button.setAttribute("aria-pressed", done ? "true" : "false");
+        button.closest(".move").classList.toggle("is-done", done);
+      });
+      const finished = plan.moves.filter(function (move) { return data.done[doneId(move)]; }).length;
+      progressEl.textContent = finished + " de " + plan.moves.length + " feitos hoje";
+      doneNote.hidden = finished !== plan.moves.length;
+    }
+
+    let localServer = location.protocol !== "file:";
+
+    function render() {
+      const plan = plans[current];
+      const data = readStore();
+      markEl.textContent = plan.letter;
+      btnA.setAttribute("aria-pressed", current === "A" ? "true" : "false");
+      btnB.setAttribute("aria-pressed", current === "B" ? "true" : "false");
+
+      const checkIcon = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.2 6.2 11.5 13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      movesEl.innerHTML = plan.moves.map(function (move, index) {
+        const n = String(index + 1).padStart(2, "0");
+        const done = !!data.done[doneId(move)];
+        const cardio = move.kind === "cardio";
+        const rx = cardio
+          ? '<span class="pill">' + move.time + "</span>"
+          : '<span class="pill">' + move.sets + " séries</span><span class=\"pill\">" + move.reps + "</span>";
+        const tag = move.tag ? '<span class="tag">' + move.tag + "</span>" : "";
+        const videoId = move.video ? (move.video.match(/shorts\/([\w-]+)/) || [])[1] : "";
+        const video = videoId
+          ? (localServer
+            ? '<div class="player"><iframe src="https://www.youtube.com/embed/' + videoId + '" title="Vídeo de ' + escapeAttr(move.name) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'
+            : '<div class="player player-offline"><p>Abre o ficheiro Abrir plano.bat nesta pasta para ver o vídeo.</p></div>')
+          : "";
+        const load = cardio
+          ? ""
+          : '<div class="load"><label for="load-' + move.id + '">Carga</label><input id="load-' + move.id + '" data-load="' + move.id + '" inputmode="decimal" autocomplete="off" placeholder="kg" value="' + escapeAttr(data.loads[loadId(move)] || "") + '"></div>';
+        return (
+          '<li class="move' + (done ? " is-done" : "") + (cardio ? " is-cardio" : "") + '">' +
+            '<button class="check" type="button" aria-pressed="' + (done ? "true" : "false") + '" aria-label="Marcar ' + move.name + ' como feito" data-check="' + move.id + '">' + checkIcon + "</button>" +
+            '<div class="body"><div class="topline"><span class="idx">' + n + "</span>" + tag + "</div>" +
+            "<p class=\"name\">" + move.name + "</p><div class=\"rx\">" + rx + "</div>" + load + video + "</div>" +
+          "</li>"
+        );
+      }).join("");
+
+      const total = plan.moves.length;
+      const finished = plan.moves.filter(function (move) { return data.done[doneId(move)]; }).length;
+      progressEl.textContent = finished + " de " + total + " feitos hoje";
+      doneNote.hidden = finished !== total;
+    }
+
+    function escapeAttr(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;");
+    }
+
+    function setPlan(letter) {
+      current = letter;
+      const next = letter === "B" ? "#b" : "#a";
+      if (location.hash.toLowerCase() !== next) history.replaceState(null, "", next);
+      render();
+    }
+
+    window.addEventListener("hashchange", function () {
+      current = location.hash.toLowerCase() === "#b" ? "B" : "A";
+      render();
+    });
+
+    btnA.addEventListener("click", function () { setPlan("A"); });
+    btnB.addEventListener("click", function () { setPlan("B"); });
+
+    document.getElementById("clear-day").addEventListener("click", function () {
+      const data = readStore();
+      const prefix = todayKey() + ":" + current + ":";
+      Object.keys(data.done).forEach(function (key) {
+        if (key.indexOf(prefix) === 0) delete data.done[key];
+      });
+      writeStore(data);
+      paintChecks();
+    });
+
+    movesEl.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-check]");
+      if (!button) return;
+      const data = readStore();
+      const key = todayKey() + ":" + current + ":" + button.getAttribute("data-check");
+      if (data.done[key]) delete data.done[key];
+      else data.done[key] = true;
+      writeStore(data);
+      paintChecks();
+    });
+
+    movesEl.addEventListener("input", function (event) {
+      const input = event.target.closest("[data-load]");
+      if (!input) return;
+      const data = readStore();
+      const key = current + ":" + input.getAttribute("data-load");
+      const value = input.value.trim();
+      if (value) data.loads[key] = input.value;
+      else delete data.loads[key];
+      writeStore(data);
+    });
+
+    if (location.protocol === "file:") {
+      const page = "http://127.0.0.1:8787/index.html" + location.hash;
+      fetch(page, { mode: "no-cors" })
+        .then(function () { location.replace(page); })
+        .catch(function () { render(); });
+    } else {
+      render();
+    }
+  </script>
+</body>
+</html>
