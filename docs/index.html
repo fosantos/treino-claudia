@@ -377,6 +377,8 @@
 
     .player-offline p { margin: 0; line-height: 1.4; }
 
+    .player-offline a { color: inherit; }
+
     .done-note {
       margin: 0 28px 8px;
       padding: 12px 14px;
@@ -564,7 +566,7 @@
         const video = videoId
           ? (localServer
             ? '<div class="player"><iframe src="https://www.youtube.com/embed/' + videoId + '" title="Vídeo de ' + escapeAttr(move.name) + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'
-            : '<div class="player player-offline"><p>Abre o ficheiro Abrir plano.bat nesta pasta para ver o vídeo.</p></div>')
+            : '<div class="player player-offline"><p>Abre o plano em <a href="https://fosantos.github.io/treino-claudia/">fosantos.github.io/treino-claudia</a> para ver o vídeo.</p></div>')
           : "";
         const load = cardio
           ? ""
@@ -638,14 +640,7 @@
       writeStore(data);
     });
 
-    if (location.protocol === "file:") {
-      const page = "http://127.0.0.1:8787/docs/index.html" + location.hash;
-      fetch(page, { mode: "no-cors" })
-        .then(function () { location.replace(page); })
-        .catch(function () { render(); });
-    } else {
-      render();
-    }
+    render();
   </script>
 </body>
 </html>
