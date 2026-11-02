@@ -639,7 +639,7 @@
     });
 
     if (location.protocol === "file:") {
-      const page = "http://127.0.0.1:8787/index.html" + location.hash;
+      const page = "http://127.0.0.1:8787/docs/index.html" + location.hash;
       fetch(page, { mode: "no-cors" })
         .then(function () { location.replace(page); })
         .catch(function () { render(); });
